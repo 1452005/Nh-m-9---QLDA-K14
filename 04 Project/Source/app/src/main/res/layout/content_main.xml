@@ -12,33 +12,53 @@
     tools:context="com.example.thanh.ssound.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <com.example.thanh.ssound.Wheel
-        android:layout_marginTop="10px"
-        android:layout_width="600px"
-        android:layout_height="600px"
-        android:id="@+id/wheel"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <!--<com.example.thanh.ssound.Wheel-->
+        <!--android:layout_marginTop="10px"-->
+        <!--android:layout_width="600px"-->
+        <!--android:layout_height="600px"-->
+        <!--android:id="@+id/wheel"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true" />-->
 
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/guide"-->
+        <!--android:textAlignment="center"-->
+        <!--android:layout_marginTop="10px"-->
+        <!--android:textSize="50px"-->
+        <!--android:textColor="#000000"-->
+        <!--android:text="Tap on the wheel to measure"-->
+        <!--android:layout_below="@+id/wheel"-->
+        <!--android:layout_alignParentEnd="true" />-->
+    <!--<com.jjoe64.graphview.GraphView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginTop="50px"-->
+        <!--android:layout_below="@id/guide"-->
+        <!--android:layout_height="500px"-->
+        <!--android:id="@+id/graph"-->
+        <!--android:layout_centerHorizontal="true"/>-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_above="@+id/tab_layout">
+
+
+    </android.support.v4.view.ViewPager>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/guide"
-        android:textAlignment="center"
-        android:layout_marginTop="10px"
-        android:textSize="50px"
-        android:textColor="#000000"
-        android:text="Tap on the wheel to measure"
-        android:layout_below="@+id/wheel"
+        app:tabPaddingBottom="400dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
-    <com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
-        android:layout_marginTop="50px"
-        android:layout_below="@id/guide"
-        android:layout_height="500px"
-        android:id="@+id/graph"
-        android:layout_centerHorizontal="true"/>
-
 
 
 </RelativeLayout>

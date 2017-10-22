@@ -34,13 +34,13 @@ public class Wheel extends View {
 
     }
 
-    float degree=45;
+    float degree=48;
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(wheel, null, new RectF(0, 0, getWidth(), getHeight()), null);
-        float x=getWidth()/2;
-        float y= getHeight()/2;
+        float x=getWidth()/2- arrow.getWidth()/2;
+        float y= getHeight()/2-arrow.getWidth()/2;
 
         Matrix matrix = new Matrix();
         matrix.reset();
@@ -61,7 +61,7 @@ public class Wheel extends View {
     public void setDecibel(float decibel){
         if(!Float.isInfinite(decibel)) {
             this.decibel=(int)decibel;
-            (new Task(45+decibel*(45/20))).execute();
+            (new Task(45+decibel*(45f/20))).execute();
         }
     }
 

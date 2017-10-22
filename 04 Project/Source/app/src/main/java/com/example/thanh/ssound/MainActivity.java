@@ -6,7 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +28,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
 
@@ -30,18 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MeasurementResult {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
-    Wheel wheel;
-    BarGraphSeries<DataPoint> series;
-
-    double y,x;
-    GraphView graphView;
-    Measurement measurement;
-    boolean isMeasuring=false;
-    Thread realTime;
-    float decibel=0;
-    TextView txtguide;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -61,47 +57,19 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //measure
 
         //checkpermission
         checkAllPermission();
 
-        txtguide=(TextView)findViewById(R.id.guide);
-        wheel = (Wheel) findViewById((R.id.wheel));
-        measurement = Measurement.createInstance(MeasureSource.MIC, this);
-        wheel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isMeasuring){
-                    isMeasuring=false;
-                    measurement.stop();
-                    realTime=null;
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-                    txtguide.setText("Tap on the wheel to measure");
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-                }else {
-                    isMeasuring=true;
-                    setupThread();
-                    measurement.start();
-                    realTime.start();
-                    txtguide.setText("Tap again to stop");
 
-                }
-            }
-        });
-
-        x = 0;
-        graphView = (GraphView) findViewById(R.id.graph);
-        series = new BarGraphSeries<>();
-        graphView.addSeries(series);
-        Viewport viewport=graphView.getViewport();
-        viewport.setYAxisBoundsManual(true);
-        viewport.setXAxisBoundsManual(true);
-        viewport.setMinX(0);
-        viewport.setMinY(0);
-        viewport.setMaxY(120);
-        viewport.setScrollable(true);
-
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mViewPager, true);
 
     }
 
@@ -109,30 +77,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        setupThread();
+
     }
 
-    private void setupThread(){
-        realTime =  new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (isMeasuring){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            x+=0.01;
-                            series.appendData(new DataPoint(x, decibel),true,100);
-                        }
-                    });
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
 
     private void checkAllPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -160,10 +107,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-
-
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -174,9 +117,34 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void setDecibel(double decibel) {
-        wheel.setDecibel((float)decibel);
-        this.decibel=(float)decibel;
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position){
+                case 0: return new MainScreenFragment();
+                case 1: return new StatisticFragment();
+                case 2: return new MainScreenFragment();
+
+            }
+
+            return null;
+
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return null;
+        }
     }
 }
