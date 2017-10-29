@@ -12,7 +12,7 @@
     tools:context="com.example.thanh.ssound.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <com.example.thanh.ssound.Wheel
+    <com.example.thanh.ssound.common.Wheel
         android:layout_marginTop="10px"
         android:layout_width="600px"
         android:layout_height="600px"

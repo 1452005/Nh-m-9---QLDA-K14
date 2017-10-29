@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "68370521669",
+    "firebase_url": "https://ssound-b67cb.firebaseio.com",
+    "project_id": "ssound-b67cb",
+    "storage_bucket": "ssound-b67cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68370521669:android:aa9f2bb6dd391d26",
+        "android_client_info": {
+          "package_name": "com.example.thanh.ssound"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68370521669-gvfjhg1hj1eql7mgsr5pp6lkag6g1sn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgUJ-UmsCux_ODEZKX73cMTWs8dGem93c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package com.example.thanh.ssound;
+package com.example.thanh.ssound.common;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,13 +17,15 @@ import android.util.Size;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.example.thanh.ssound.R;
+
 import java.util.Random;
 
 /**
  * Created by Thanh on 10/13/2017.
  */
 public class Wheel extends View {
-    private Bitmap wheel= BitmapFactory.decodeResource(getResources(),R.drawable.wheel);
+    private Bitmap wheel= BitmapFactory.decodeResource(getResources(), R.drawable.wheel);
     private Bitmap arrow=BitmapFactory.decodeResource(getResources(),R.drawable.arrow);
     private Size screenSize;
     private int decibel=0;

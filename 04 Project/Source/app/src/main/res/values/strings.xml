@@ -5,4 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- AdMob ad unit IDs -->
+    <string name="Banner">ca-app-pub-5869339706395652/7107463598</string>
 </resources>

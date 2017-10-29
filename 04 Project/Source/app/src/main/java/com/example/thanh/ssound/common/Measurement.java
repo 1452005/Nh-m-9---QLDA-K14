@@ -1,16 +1,8 @@
-package com.example.thanh.ssound;
+package com.example.thanh.ssound.common;
 
 
 import android.os.Handler;
 
-/**
- * Created by Thanh on 10/6/2017.
- */
-
-enum MeasureSource{
-    MIC,
-    OUTPUT
-}
 public abstract class Measurement {
     protected MeasurementResult measurementResult;
     protected Handler handler;
@@ -30,7 +22,7 @@ public abstract class Measurement {
         handler=new Handler();
     }
 
-    abstract void start();
+    public abstract void start();
 
-    abstract void stop();
+    public abstract void stop();
 }

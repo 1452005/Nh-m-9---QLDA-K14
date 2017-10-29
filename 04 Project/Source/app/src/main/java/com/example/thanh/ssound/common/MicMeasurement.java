@@ -1,4 +1,4 @@
-package com.example.thanh.ssound;
+package com.example.thanh.ssound.common;
 
 import android.media.MediaRecorder;
 
@@ -23,7 +23,7 @@ public class MicMeasurement extends Measurement {
         mediaRecorder.setOutputFile("/dev/null");
     }
     @Override
-    void start()  {
+    public void start()  {
         runnable=new Runnable() {
             @Override
             public void run() {
@@ -46,7 +46,7 @@ public class MicMeasurement extends Measurement {
     }
 
     @Override
-    void stop() {
+    public void stop() {
         if(mediaRecorder!=null) {
             handler.removeCallbacks(runnable);
             mediaRecorder.stop();

@@ -1,4 +1,4 @@
-package com.example.thanh.ssound;
+package com.example.thanh.ssound.screen;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,9 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.thanh.ssound.R;
+import com.example.thanh.ssound.common.MeasureSource;
+import com.example.thanh.ssound.common.Measurement;
+import com.example.thanh.ssound.common.MeasurementResult;
+import com.example.thanh.ssound.common.Wheel;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 

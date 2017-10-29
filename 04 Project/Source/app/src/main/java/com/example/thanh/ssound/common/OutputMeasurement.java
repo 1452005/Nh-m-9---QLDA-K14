@@ -1,7 +1,6 @@
-package com.example.thanh.ssound;
+package com.example.thanh.ssound.common;
 
 import android.media.audiofx.Visualizer;
-import android.os.Handler;
 
 /**
  * Created by Thanh on 10/6/2017.

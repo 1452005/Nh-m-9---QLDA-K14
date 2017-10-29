@@ -1,39 +1,34 @@
 package com.example.thanh.ssound;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.example.thanh.ssound.screen.MainScreenFragment;
+import com.example.thanh.ssound.screen.StatisticFragment;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -70,6 +65,34 @@ public class MainActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager, true);
+        navigationView.getMenu().findItem(R.id.nav_warning).setActionView(new Switch(this));
+        Switch healthSwitch =(Switch) navigationView.getMenu().findItem(R.id.nav_warning).getActionView();
+        healthSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b == true) {
+                    startService(new Intent(MainActivity.this, BackgroundService.class));
+                } else {
+                    stopService(new Intent(MainActivity.this, BackgroundService.class));
+                }
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //advertise
+        MobileAds.initialize(this, "ca-app-pub-5869339706395652~9980150895");
+        AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.BANNER);
+        adView.setAdUnitId(getString(R.string.Banner));
+
+        adView =(AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("6430AEB378BEF21DC2B07D2E224846B9")
+                .build();
+
+        adView.loadAd(adRequest);
 
     }
 
@@ -80,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
+    //check all permistion that app use from device (use from Android 6.0)
     private void checkAllPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
@@ -90,7 +113,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(this,
                             "Video app required access to microphone", Toast.LENGTH_SHORT).show();
                 }
-                requestPermissions(new String[]{android.Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                requestPermissions(new String[]{android.Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE}, 0);
                 return;
             }
 
@@ -112,8 +135,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+
+        if (id == R.id.nav_warning) {
+            Switch healthSwitch =(Switch) item.getActionView();
+            if(healthSwitch.isChecked()){
+                healthSwitch.setChecked(false);
+            }else{
+                healthSwitch.setChecked(true);
+            }
+        } else if (id == R.id.nav_feedback) {
+            Intent intent = new Intent(this, FeedbackActivity.class);
+            startActivity(intent);
+        }
+
+        if(id!=R.id.nav_warning) {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 

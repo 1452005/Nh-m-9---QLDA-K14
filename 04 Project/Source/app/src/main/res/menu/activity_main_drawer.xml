@@ -5,13 +5,16 @@
 
         <item
             android:id="@+id/nav_warning"
-            android:title="Health warming" />
+            android:title="Health warming"
+            android:icon="@drawable/ic_add_alert"/>
         <item
             android:id="@+id/nav_feedback"
-            android:title="Feedback" />
+            android:title="Feedback"
+            android:icon="@drawable/ic_menu_send"/>
         <item
             android:id="@+id/nav_signin"
-            android:title="Signin" />
+            android:title="Signin"
+            android:icon="@drawable/ic_person_24dp"/>
 
     </group>
 
