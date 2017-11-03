@@ -1,10 +1,12 @@
 package com.example.thanh.ssound;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.thanh.ssound.screen.FileScreen;
 import com.example.thanh.ssound.screen.MainScreenFragment;
 import com.example.thanh.ssound.screen.StatisticFragment;
 import com.google.android.gms.ads.AdRequest;
@@ -29,12 +33,20 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    Switch healthSwitch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +75,10 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager, true);
         navigationView.getMenu().findItem(R.id.nav_warning).setActionView(new Switch(this));
-        Switch healthSwitch =(Switch) navigationView.getMenu().findItem(R.id.nav_warning).getActionView();
+        healthSwitch = (Switch) navigationView.getMenu().findItem(R.id.nav_warning).getActionView();
         healthSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -86,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         adView.setAdSize(AdSize.BANNER);
         adView.setAdUnitId(getString(R.string.Banner));
 
-        adView =(AdView) findViewById(R.id.adView);
+        adView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("6430AEB378BEF21DC2B07D2E224846B9")
@@ -100,7 +112,44 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        InputStream inputStream = null;
+        try {
+            inputStream = openFileInput("config.txt");
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
 
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveString);
+                }
+                inputStream.close();
+                healthSwitch.setChecked(Boolean.parseBoolean(stringBuilder.toString()));
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(healthSwitch!=null){
+            OutputStreamWriter outputStreamWriter = null;
+            try {
+                outputStreamWriter = new OutputStreamWriter(openFileOutput("config.txt", Context.MODE_PRIVATE));
+                outputStreamWriter.write(String.valueOf(healthSwitch.isChecked()));
+                outputStreamWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     //check all permistion that app use from device (use from Android 6.0)
@@ -113,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(this,
                             "Video app required access to microphone", Toast.LENGTH_SHORT).show();
                 }
-                requestPermissions(new String[]{android.Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE}, 0);
+                requestPermissions(new String[]{android.Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE,Manifest.permission.SYSTEM_ALERT_WINDOW}, 0);
                 return;
             }
 
@@ -167,7 +216,7 @@ public class MainActivity extends AppCompatActivity
             switch (position){
                 case 0: return new MainScreenFragment();
                 case 1: return new StatisticFragment();
-                case 2: return new MainScreenFragment();
+                case 2: return new FileScreen();
 
             }
 

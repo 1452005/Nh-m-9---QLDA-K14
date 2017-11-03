@@ -14,6 +14,9 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
@@ -44,11 +47,28 @@ public class StatisticFragment extends Fragment {
     private void getData(){
         DataPoint []points=new DataPoint[30];
         float a=0;
-        for(int i=0;i<30;i++){
-
-            points[i]= new DataPoint(i,Math.random()*120);
+        for(int i=0;i<30;i++) {
+            points[i] = new DataPoint(i, 0);
         }
+            InputStream inputStream = null;
+            try {
+                inputStream =getContext().openFileInput("data.txt");
+                if ( inputStream != null ) {
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                    String receiveString = "";
 
+                    int index=0;
+                    while ((receiveString = bufferedReader.readLine()) != null) {
+                        points[index]= new DataPoint(index,(Integer.parseInt(receiveString)));
+                    }
+                    inputStream.close();
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         series.resetData(points);
     }
 }
