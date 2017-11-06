@@ -29,6 +29,8 @@ public class StatisticFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.statistic_screen, container, false);
+
+        //prepare for graph view
         graphView=(GraphView)rootView.findViewById(R.id.graph);
         series=new BarGraphSeries<>();
         getData();
@@ -45,11 +47,15 @@ public class StatisticFragment extends Fragment {
 
     //get data for create graph
     private void getData(){
+
+        //read file data and show in graph view
         DataPoint []points=new DataPoint[30];
         float a=0;
         for(int i=0;i<30;i++) {
             points[i] = new DataPoint(i, 0);
         }
+
+        //read file
             InputStream inputStream = null;
             try {
                 inputStream =getContext().openFileInput("data.txt");

@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.WindowManager;
 
 
@@ -37,27 +38,44 @@ import java.util.TimerTask;
  * Created by Thanh on 10/29/2017.
  */
 public class BackgroundService extends Service implements MeasurementResult {
+
+    //check for schedule check
     Timer mTimer;
+
+    //popup is showing
     boolean isshow=false;
+
+    //Use for save data
     List<Integer> decibels=new ArrayList<>();
     int maxDecibel;
+
     Handler handler=new Handler();
     String currentDate;
 
+    //popup will repeat showing in 5 minute
+    int repeatTime=0;
     TimerTask mTimerTask=new TimerTask() {
         @Override
         public void run() {
-            if(decibel>65 && decibel!=73) {
+
+            //check condition show popup
+            if(decibel>65 && decibel!=73 && repeatTime==0) {
                 if(isshow==false) {
 
+                    //notify and show popup
                     notify1();
                     handler.post(runable);
                     isshow = true;
                 }
             }else {
                 isshow =false;
+                //update repeat time
+                if(repeatTime>0) {
+                    repeatTime -= 2;
+                }
             }
 
+            //check to save data to file
             String pattern = "dd-MM-yyyy";
             String date =new SimpleDateFormat(pattern).format(new Date());
             if(decibel>maxDecibel){
@@ -108,6 +126,7 @@ public class BackgroundService extends Service implements MeasurementResult {
             e.printStackTrace();
         }
 
+        //start listening
         mTimer=new Timer();
         mTimer.schedule(mTimerTask,2000,2000);
         Measurement m= Measurement.createInstance(MeasureSource.OUTPUT,this);
@@ -116,22 +135,20 @@ public class BackgroundService extends Service implements MeasurementResult {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try{
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
+        //stop listening
         mTimer.cancel();
         mTimerTask.cancel();
         writeData();
         super.onDestroy();
     }
 
+    //write data to file
     private void writeData() {
         OutputStreamWriter outputStreamWriter = null;
         try {
@@ -145,6 +162,7 @@ public class BackgroundService extends Service implements MeasurementResult {
         }
     }
 
+    //push notify function
     int decibel;
     public void notify1(){
 
@@ -174,21 +192,29 @@ public class BackgroundService extends Service implements MeasurementResult {
         this.decibel=(int)decibel;
     }
 
+
+    //show popup warning
     final Runnable runable = new Runnable() {
         public void run() {
             AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
             alertDialog.setTitle("Warning");
-            alertDialog.setMessage("This sound level can effect on your ear");
+            alertDialog.setMessage("This sound level can effect on your ear\n" +
+                    " If you click cancel, this popup will never show again");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Cancel",
                     new DialogInterface.OnClickListener() {
+                        //if choose cancel => stop service
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            getApplicationContext().stopService(new Intent(getApplicationContext(),BackgroundService.class));
                         }
                     });
             alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+
+                            //if choose od => set repeat time to 5 minute = 300 second
                             dialog.dismiss();
+                            repeatTime=300;
                         }
                     });
             alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);

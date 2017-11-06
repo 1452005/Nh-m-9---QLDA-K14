@@ -10,11 +10,14 @@ public class OutputMeasurement extends Measurement {
 
     protected OutputMeasurement(MeasurementResult result) {
         super(result);
+
+        //configure for recorduing
         visualizer=new Visualizer(0);
         visualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
 
     }
 
+    //start measure
     @Override
     public void start(){
         stop();
@@ -30,6 +33,7 @@ public class OutputMeasurement extends Measurement {
         runnable.run();
     }
 
+    //update result to interface
     private void updateStatus() {
         Visualizer.MeasurementPeakRms measurementPeakRms = new Visualizer.MeasurementPeakRms();
         visualizer.getMeasurementPeakRms(measurementPeakRms);
@@ -37,6 +41,7 @@ public class OutputMeasurement extends Measurement {
 
     }
 
+    //stop measure
     @Override
     public void stop() {
         handler.removeCallbacks(runnable);

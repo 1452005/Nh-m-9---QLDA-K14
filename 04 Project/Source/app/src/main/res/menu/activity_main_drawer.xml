@@ -11,10 +11,6 @@
             android:id="@+id/nav_feedback"
             android:title="Feedback"
             android:icon="@drawable/ic_menu_send"/>
-        <item
-            android:id="@+id/nav_signin"
-            android:title="Signin"
-            android:icon="@drawable/ic_person_24dp"/>
 
     </group>
 

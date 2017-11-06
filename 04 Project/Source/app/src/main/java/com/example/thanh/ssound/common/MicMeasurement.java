@@ -15,6 +15,7 @@ public class MicMeasurement extends Measurement {
 
     }
 
+    //prepare before record
     private void prepare(){
         mediaRecorder=new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -22,6 +23,8 @@ public class MicMeasurement extends Measurement {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mediaRecorder.setOutputFile("/dev/null");
     }
+
+    //start record
     @Override
     public void start()  {
         runnable=new Runnable() {
@@ -41,10 +44,12 @@ public class MicMeasurement extends Measurement {
         }
     }
 
+    //update result to interface
     private void updateStatus() {
         measurementResult.setDecibel(20 * Math.log10(mediaRecorder.getMaxAmplitude()));
     }
 
+    //stop record
     @Override
     public void stop() {
         if(mediaRecorder!=null) {

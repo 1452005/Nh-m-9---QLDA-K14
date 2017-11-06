@@ -23,19 +23,25 @@ public class FeedbackActivity extends AppCompatActivity {
 
         WebView webView = (WebView) findViewById(R.id.webView);
 
+        //cònigure webview
         webView.getSettings().setJavaScriptEnabled(true);
         progress = ProgressDialog.show(this, "Loading", "Please wait...");
+
+        //load content
         webView.setWebViewClient(new WebViewClient(){
 
+            //check version
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                //load url
                 view.loadUrl(String.valueOf(request.getUrl()));
                 return true;
             }
 
             @Override
             public void onPageFinished(WebView view, final String url) {
+                //hide progress bar
                 if(progress.isShowing()) {
                     progress.dismiss();
                 }
@@ -43,6 +49,8 @@ public class FeedbackActivity extends AppCompatActivity {
         });
 
         webView.loadUrl("https://docs.google.com/forms/d/e/1FAIpQLScCK0cYhR5B22--scxiX6nBLUZ3Jr0_ABQtr4rXHKQQzCvUlA/viewform");
+
+        // show back button
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }

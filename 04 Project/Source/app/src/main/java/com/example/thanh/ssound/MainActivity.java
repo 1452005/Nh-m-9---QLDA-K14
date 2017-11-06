@@ -4,9 +4,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,15 +21,18 @@ import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.thanh.ssound.common.MeasureSource;
+import com.example.thanh.ssound.common.Measurement;
+import com.example.thanh.ssound.common.MeasurementResult;
 import com.example.thanh.ssound.screen.FileScreen;
 import com.example.thanh.ssound.screen.MainScreenFragment;
 import com.example.thanh.ssound.screen.StatisticFragment;
@@ -34,14 +42,17 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URISyntaxException;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, MeasurementResult{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -55,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //add navigation bar to app
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,24 +87,32 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
+        //make application display in tab
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager, true);
+
+        //set switch button to item menu
         navigationView.getMenu().findItem(R.id.nav_warning).setActionView(new Switch(this));
+
+        //catch event
         healthSwitch = (Switch) navigationView.getMenu().findItem(R.id.nav_warning).getActionView();
         healthSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b == true) {
+                    //start service
                     startService(new Intent(MainActivity.this, BackgroundService.class));
                 } else {
+                    //stop service
                     stopService(new Intent(MainActivity.this, BackgroundService.class));
                 }
             }
         });
 
+        //catch on navigation bar item click
         navigationView.setNavigationItemSelectedListener(this);
 
-        //advertise
+        //add advertise
         MobileAds.initialize(this, "ca-app-pub-5869339706395652~9980150895");
         AdView adView = new AdView(this);
         adView.setAdSize(AdSize.BANNER);
@@ -105,13 +125,19 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         adView.loadAd(adRequest);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        //Load config file
         InputStream inputStream = null;
         try {
             inputStream = openFileInput("config.txt");
@@ -125,6 +151,7 @@ public class MainActivity extends AppCompatActivity
                     stringBuilder.append(receiveString);
                 }
                 inputStream.close();
+                //set value to switch button
                 healthSwitch.setChecked(Boolean.parseBoolean(stringBuilder.toString()));
             }
 
@@ -139,6 +166,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+
+        //write data to config file
         if(healthSwitch!=null){
             OutputStreamWriter outputStreamWriter = null;
             try {
@@ -169,6 +198,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //processing with navigation bar
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -185,14 +215,14 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_warning) {
+        if (id == R.id.nav_warning) {   // on/off health warming
             Switch healthSwitch =(Switch) item.getActionView();
             if(healthSwitch.isChecked()){
                 healthSwitch.setChecked(false);
             }else{
                 healthSwitch.setChecked(true);
             }
-        } else if (id == R.id.nav_feedback) {
+        } else if (id == R.id.nav_feedback) {   // open feedback screen
             Intent intent = new Intent(this, FeedbackActivity.class);
             startActivity(intent);
         }
@@ -204,7 +234,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void setDecibel(double decibel) {
+        Log.d("Audio----------",String.valueOf(decibel));
+    }
 
+
+    //Processing with paging in tab view
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -219,7 +255,6 @@ public class MainActivity extends AppCompatActivity
                 case 2: return new FileScreen();
 
             }
-
             return null;
 
         }

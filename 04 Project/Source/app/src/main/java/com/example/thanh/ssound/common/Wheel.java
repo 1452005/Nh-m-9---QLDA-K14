@@ -25,9 +25,13 @@ import java.util.Random;
  * Created by Thanh on 10/13/2017.
  */
 public class Wheel extends View {
+
+    //get resource
     private Bitmap wheel= BitmapFactory.decodeResource(getResources(), R.drawable.wheel);
     private Bitmap arrow=BitmapFactory.decodeResource(getResources(),R.drawable.arrow);
+
     private Size screenSize;
+
     private int decibel=0;
 
     public Wheel(Context context, AttributeSet attrs) {
@@ -40,10 +44,15 @@ public class Wheel extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        //draw wheel
         canvas.drawBitmap(wheel, null, new RectF(0, 0, getWidth(), getHeight()), null);
+
+        //get width and height to process for arraw image
         float x=getWidth()/2- arrow.getWidth()/2;
         float y= getHeight()/2-arrow.getWidth()/2;
 
+        //prepare for arrow rotate
         Matrix matrix = new Matrix();
         matrix.reset();
         matrix.postRotate(degree,arrow.getWidth()/2,arrow.getWidth()/2);
@@ -51,15 +60,18 @@ public class Wheel extends View {
         canvas.drawBitmap(arrow, matrix, null);
 
 
+        //draw text prepare
         Paint paint=new Paint();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(80);
 
+        //draw arrow image
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(String.valueOf(decibel)+" dB",getWidth()/2-paint.getStrokeWidth()/2,(float)(getHeight()*0.75),paint);
     }
 
+    //set decibel for wheel
     public void setDecibel(float decibel){
         if(!Float.isInfinite(decibel)) {
             this.decibel=(int)decibel;
@@ -67,6 +79,7 @@ public class Wheel extends View {
         }
     }
 
+    //make animation for arrow rotation
     private class Task extends AsyncTask<Void,Void,Void> {
 
         float destinaiton;

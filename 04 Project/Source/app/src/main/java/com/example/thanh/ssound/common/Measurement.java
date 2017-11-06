@@ -8,6 +8,8 @@ public abstract class Measurement {
     protected Handler handler;
     protected Runnable runnable;
     public static Measurement createInstance(MeasureSource source, MeasurementResult outputResult){
+
+        //check source
         if( source == MeasureSource.MIC){
             return new MicMeasurement(outputResult);
         }
@@ -16,6 +18,7 @@ public abstract class Measurement {
         }
         return null;
     }
+
 
     protected Measurement(MeasurementResult output){
         measurementResult=output;

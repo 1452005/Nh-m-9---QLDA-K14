@@ -23,13 +23,18 @@ import com.jjoe64.graphview.series.LineGraphSeries;
  */
 public class MainScreenFragment extends Fragment implements MeasurementResult {
 
-    Wheel wheel;
-    LineGraphSeries<DataPoint> series;
 
+    Wheel wheel;
+
+    //use for grapview
+    LineGraphSeries<DataPoint> series;
     double y,x;
     GraphView graphView;
+
+    //Measure sound
     Measurement measurement;
     boolean isMeasuring=false;
+
     Thread realTime;
     float decibel=0;
     TextView txtguide;
@@ -37,31 +42,43 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.main_screen, container, false);
+
+        //get id widget
         txtguide=(TextView)rootView.findViewById(R.id.guide);
         wheel = (Wheel)rootView.findViewById((R.id.wheel));
+
+        //prepare for measure
         measurement = Measurement.createInstance(MeasureSource.MIC, this);
         wheel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isMeasuring){
-                    isMeasuring=false;
-                    measurement.stop();
-                    decibel=0;
-                    realTime=null;
-                    wheel.setDecibel(decibel);
-                    txtguide.setText("Tap on the wheel to measure");
+                try {
+                    if (isMeasuring) {
+                        isMeasuring = false;
+                        txtguide.setText("Tap on the wheel to measure");
+                        realTime = null;
+                        wheel.setDecibel(0);
+                        measurement.stop();
+                        decibel = 0;
 
-                }else {
-                    isMeasuring=true;
-                    setupThread();
-                    measurement.start();
-                    realTime.start();
-                    txtguide.setText("Tap again to stop");
+
+
+                    } else {
+                        isMeasuring = true;
+                        txtguide.setText("Tap again to stop");
+                        setupThread();
+                        measurement.start();
+                        realTime.start();
+
+
+                    }
+                }catch (Exception e) {
 
                 }
             }
         });
 
+        //draw graph
         x = 0;
         graphView = (GraphView)rootView.findViewById(R.id.graph);
         series = new LineGraphSeries<>();
@@ -73,8 +90,6 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
         viewport.setMinY(0);
         viewport.setMaxY(120);
         viewport.setScrollable(true);
-
-
         return rootView;
     }
 
@@ -91,14 +106,15 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
         realTime=null;
     }
 
+
+    // setup thread for realtime graph
     private void setupThread(){
         realTime =  new Thread(new Runnable() {
             @Override
             public void run() {
                 while (isMeasuring){
                     x+=0.01;
-                    series.appendData(new DataPoint(x, decibel),true,100);
-
+                        series.appendData(new DataPoint(x, decibel), true, 100);
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -110,6 +126,7 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
     }
 
 
+    //get decibel
     @Override
     public void setDecibel(double decibel) {
         wheel.setDecibel((float)decibel);
