@@ -52,7 +52,7 @@ import java.net.URISyntaxException;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MeasurementResult{
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -184,14 +184,17 @@ public class MainActivity extends AppCompatActivity
     //check all permistion that app use from device (use from Android 6.0)
     private void checkAllPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
-                    PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
 
-                if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                if (    shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+                        && shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        && shouldShowRequestPermissionRationale(Manifest.permission.INTERNET)) {
                     Toast.makeText(this,
-                            "Video app required access to microphone", Toast.LENGTH_SHORT).show();
+                            "Your permission is needed to proceed further more", Toast.LENGTH_SHORT).show();
                 }
-                requestPermissions(new String[]{android.Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE,Manifest.permission.SYSTEM_ALERT_WINDOW}, 0);
+                requestPermissions(new String[]{android.Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE}, 0);
                 return;
             }
 
@@ -234,12 +237,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void setDecibel(double decibel) {
-        Log.d("Audio----------",String.valueOf(decibel));
-    }
-
-
     //Processing with paging in tab view
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -267,6 +264,19 @@ public class MainActivity extends AppCompatActivity
         @Override
         public CharSequence getPageTitle(int position) {
             return null;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        for(int i=0;i< grantResults.length;i++){
+            if(grantResults[i]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,
+                        "Your permission is needed to proceed further more", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 }

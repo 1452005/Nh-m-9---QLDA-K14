@@ -39,6 +39,9 @@ import java.util.TimerTask;
  */
 public class BackgroundService extends Service implements MeasurementResult {
 
+    //decibel get from output device
+    int decibel;
+
     //check for schedule check
     Timer mTimer;
 
@@ -63,8 +66,7 @@ public class BackgroundService extends Service implements MeasurementResult {
                 if(isshow==false) {
 
                     //notify and show popup
-                    notify1();
-                    handler.post(runable);
+                    showNotify();
                     isshow = true;
                 }
             }else {
@@ -72,6 +74,8 @@ public class BackgroundService extends Service implements MeasurementResult {
                 //update repeat time
                 if(repeatTime>0) {
                     repeatTime -= 2;
+                }else{
+                    repeatTime = 300;
                 }
             }
 
@@ -114,14 +118,11 @@ public class BackgroundService extends Service implements MeasurementResult {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
 
-
                 while ((receiveString = bufferedReader.readLine()) != null) {
                     decibels.add(Integer.parseInt(receiveString));
                 }
                 inputStream.close();
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,7 +136,6 @@ public class BackgroundService extends Service implements MeasurementResult {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -163,8 +163,8 @@ public class BackgroundService extends Service implements MeasurementResult {
     }
 
     //push notify function
-    int decibel;
-    public void notify1(){
+
+    public void showNotify(){
 
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("RSSPullService");
@@ -185,6 +185,9 @@ public class BackgroundService extends Service implements MeasurementResult {
         Notification notification=builder.build();
         NotificationManager notificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1,notification);
+
+        //show popup
+        handler.post(runable);
        }
 
     @Override
