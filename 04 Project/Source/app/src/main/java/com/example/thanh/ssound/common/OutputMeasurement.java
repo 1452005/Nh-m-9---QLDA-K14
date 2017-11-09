@@ -37,7 +37,12 @@ public class OutputMeasurement extends Measurement {
     private void updateStatus() {
         Visualizer.MeasurementPeakRms measurementPeakRms = new Visualizer.MeasurementPeakRms();
         visualizer.getMeasurementPeakRms(measurementPeakRms);
-        measurementResult.setDecibel(20*Math.log10(Math.abs(5000+ measurementPeakRms.mRms)));
+        int decibel=(int)(20*Math.log10(Math.abs(5000+ measurementPeakRms.mRms)));
+        if(decibel<73) {
+            measurementResult.setDecibel(decibel);
+        }else {
+            measurementResult.setDecibel(0);
+        }
 
     }
 

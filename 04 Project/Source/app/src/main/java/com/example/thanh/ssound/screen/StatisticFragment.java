@@ -67,6 +67,7 @@ public class StatisticFragment extends Fragment {
                     int index=0;
                     while ((receiveString = bufferedReader.readLine()) != null) {
                         points[index]= new DataPoint(index,(Integer.parseInt(receiveString)));
+                        index++;
                     }
                     inputStream.close();
                 }

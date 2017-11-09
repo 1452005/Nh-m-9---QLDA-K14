@@ -39,6 +39,7 @@ import java.util.TimerTask;
  */
 public class BackgroundService extends Service implements MeasurementResult {
 
+    private static final int REPEAT_TIME = 300;
     //decibel get from output device
     int decibel;
 
@@ -57,6 +58,7 @@ public class BackgroundService extends Service implements MeasurementResult {
 
     //popup will repeat showing in 5 minute
     int repeatTime=0;
+
     TimerTask mTimerTask=new TimerTask() {
         @Override
         public void run() {
@@ -74,8 +76,6 @@ public class BackgroundService extends Service implements MeasurementResult {
                 //update repeat time
                 if(repeatTime>0) {
                     repeatTime -= 2;
-                }else{
-                    repeatTime = 300;
                 }
             }
 
@@ -85,12 +85,13 @@ public class BackgroundService extends Service implements MeasurementResult {
             if(decibel>maxDecibel){
                 maxDecibel=decibel;
             }
-            if(currentDate!=date){
+            if(currentDate.equals(date)==false){
                 decibels.add(maxDecibel);
                 if(decibels.size()>30){
                     decibels.remove(0);
                 }
                 writeData();
+                maxDecibel=0;
             }
         }
     };
@@ -152,9 +153,9 @@ public class BackgroundService extends Service implements MeasurementResult {
     private void writeData() {
         OutputStreamWriter outputStreamWriter = null;
         try {
-            outputStreamWriter = new OutputStreamWriter(openFileOutput("data.txt", Context.MODE_PRIVATE));
+            outputStreamWriter = new OutputStreamWriter(getApplicationContext().openFileOutput("data.txt", Context.MODE_PRIVATE));
             for(int i=0; i< decibels.size();i++){
-                outputStreamWriter.write(String.valueOf(decibels.get(i)));
+                outputStreamWriter.write(String.valueOf(decibels.get(i))+"\n");
             }
             outputStreamWriter.close();
         } catch (Exception e) {
@@ -217,7 +218,7 @@ public class BackgroundService extends Service implements MeasurementResult {
 
                             //if choose od => set repeat time to 5 minute = 300 second
                             dialog.dismiss();
-                            repeatTime=300;
+                            repeatTime=REPEAT_TIME;
                         }
                     });
             alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
