@@ -70,13 +70,13 @@ public class FileScreen extends Fragment implements MeasurementResult {
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         switch (requestCode) {
             case 0:
+                try{
                     // Get the Uri of the selected file
                     Uri uri = data.getData();
                     // Get the path
                     String path = null;
-                    try {
-                        path = getPath(getContext(), uri);
-                    } catch (URISyntaxException e) {
+                    path = getPath(getContext(), uri);
+                } catch (Exception e) {
                         e.printStackTrace();
                     }
                 break;
