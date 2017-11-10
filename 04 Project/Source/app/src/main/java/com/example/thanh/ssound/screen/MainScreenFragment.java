@@ -54,23 +54,10 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
             public void onClick(View view) {
                 try {
                     if (isMeasuring) {
-                        isMeasuring = false;
-                        txtguide.setText("Tap on the wheel to measure");
-                        realTime = null;
-                        wheel.setDecibel(0);
-                        measurement.stop();
-                        decibel = 0;
-
-
+                        stop();
 
                     } else {
-                        isMeasuring = true;
-                        txtguide.setText("Tap again to stop");
-                        setupThread();
-                        measurement.start();
-                        realTime.start();
-
-
+                        start();
                     }
                 }catch (Exception e) {
 
@@ -102,8 +89,7 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        measurement.stop();
-        realTime=null;
+        stop();
     }
 
 
@@ -132,4 +118,27 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
         wheel.setDecibel((float)decibel);
         this.decibel=(float)decibel;
     }
+
+
+    //start measure
+    public void start(){
+        isMeasuring = true;
+        txtguide.setText("Tap again to stop");
+        setupThread();
+        measurement.start();
+        realTime.start();
+
+    }
+
+    //stopmeasure
+    public void stop(){
+        isMeasuring = false;
+        txtguide.setText("Tap on the wheel to measure");
+        realTime = null;
+        wheel.setDecibel(0);
+        measurement.stop();
+        decibel = 0;
+    }
+
+
 }

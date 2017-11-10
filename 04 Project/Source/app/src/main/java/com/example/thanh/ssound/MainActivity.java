@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
     Switch healthSwitch;
 
+    //Screen
+    MainScreenFragment mainScreen= new MainScreenFragment();
+    StatisticFragment statisticScreen=new StatisticFragment();
+    FileScreen fileScreen=new FileScreen();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,24 @@ public class MainActivity extends AppCompatActivity
         //make application display in tab
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager, true);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition()==1||tab.getPosition()==2){
+                    mainScreen.stop();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         //set switch button to item menu
         navigationView.getMenu().findItem(R.id.nav_warning).setActionView(new Switch(this));
@@ -247,9 +270,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0: return new MainScreenFragment();
-                case 1: return new StatisticFragment();
-                case 2: return new FileScreen();
+                case 0: return mainScreen;
+                case 1: return statisticScreen;
+                case 2: return fileScreen;
 
             }
             return null;
