@@ -8,5 +8,6 @@ package com.example.thanh.ssound.common;
 //list of source
 public enum MeasureSource{
     MIC,
-    OUTPUT
+    OUTPUT,
+    FREQ
 }

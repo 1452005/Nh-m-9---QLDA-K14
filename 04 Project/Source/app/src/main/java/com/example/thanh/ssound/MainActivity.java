@@ -4,14 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,16 +18,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.thanh.ssound.common.MeasureSource;
-import com.example.thanh.ssound.common.Measurement;
-import com.example.thanh.ssound.common.MeasurementResult;
+import com.example.thanh.ssound.common.FreqMeasurement;
 import com.example.thanh.ssound.screen.FileScreen;
+import com.example.thanh.ssound.screen.FreqScreen;
 import com.example.thanh.ssound.screen.MainScreenFragment;
 import com.example.thanh.ssound.screen.StatisticFragment;
 import com.google.android.gms.ads.AdRequest;
@@ -42,13 +34,9 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
 
 
 public class MainActivity extends AppCompatActivity
@@ -62,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     MainScreenFragment mainScreen= new MainScreenFragment();
     StatisticFragment statisticScreen=new StatisticFragment();
     FileScreen fileScreen=new FileScreen();
+    FreqScreen freqScreen=new FreqScreen();
 
 
     @Override
@@ -100,6 +89,7 @@ public class MainActivity extends AppCompatActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 if(tab.getPosition()==1||tab.getPosition()==2){
                     mainScreen.stop();
+                    freqScreen.stop();
                 }
             }
 
@@ -273,7 +263,7 @@ public class MainActivity extends AppCompatActivity
                 case 0: return mainScreen;
                 case 1: return statisticScreen;
                 case 2: return fileScreen;
-
+                case 3: return freqScreen;
             }
             return null;
 
@@ -281,7 +271,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override

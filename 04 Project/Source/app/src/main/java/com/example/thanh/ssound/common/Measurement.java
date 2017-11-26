@@ -16,6 +16,9 @@ public abstract class Measurement {
         if( source==MeasureSource.OUTPUT){
             return new OutputMeasurement(outputResult);
         }
+        if(source==MeasureSource.FREQ){
+            return new FreqMeasurement(outputResult);
+        }
         return null;
     }
 
