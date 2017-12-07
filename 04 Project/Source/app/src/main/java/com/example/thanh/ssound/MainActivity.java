@@ -87,9 +87,12 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition()==1||tab.getPosition()==2){
+                if(tab.getPosition()==1){
                     mainScreen.stop();
                     freqScreen.stop();
+                }
+                if(tab.getPosition()==2){
+                    freqScreen.start();
                 }
             }
 
@@ -262,8 +265,7 @@ public class MainActivity extends AppCompatActivity
             switch (position){
                 case 0: return mainScreen;
                 case 1: return statisticScreen;
-                case 2: return fileScreen;
-                case 3: return freqScreen;
+                case 2: return freqScreen;
             }
             return null;
 
@@ -271,7 +273,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
 
         @Override

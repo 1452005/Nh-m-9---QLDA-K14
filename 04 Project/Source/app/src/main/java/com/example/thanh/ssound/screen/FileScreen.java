@@ -148,7 +148,7 @@ public class FileScreen extends Fragment implements MeasurementResult {
 
 
     @Override
-    public void setDecibel(double decibel) {
+    public void setValue(double decibel) {
         Log.d("-----------------------", String.valueOf(decibel));
     }
 }

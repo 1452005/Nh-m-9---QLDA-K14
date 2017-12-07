@@ -8,18 +8,22 @@ import android.util.Log;
 
 import com.example.thanh.ssound.pack.RealDoubleFFT;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by Thanh on 11/24/2017.
  */
 public class FreqMeasurement extends Measurement {
     private static final double[] CANCELLED = {100};
-    int frequency = 8000;/*44100;*/
+    int frequency = 8000;
     int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
     int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 
     AudioRecord audioRecord;
     private RealDoubleFFT transformer;
-    int blockSize = /*2048;// = */256;
+    int blockSize = 256;
     boolean started = false;
     boolean CANCELLED_FLAG = false;
     double[][] cancelledResult = {{100}};
@@ -36,8 +40,10 @@ public class FreqMeasurement extends Measurement {
     public void start(){
         transformer = new RealDoubleFFT(blockSize);
         started=true;
-        new RecordAudio().execute();
+        RecordAudio recordAudio=new RecordAudio();
+        recordAudio.execute();
     }
+
 
     @Override
     public void stop() {
@@ -48,7 +54,6 @@ public class FreqMeasurement extends Measurement {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
             int bufferSize = AudioRecord.getMinBufferSize(frequency,
                     channelConfiguration, audioEncoding);
             audioRecord = new AudioRecord(
@@ -76,13 +81,14 @@ public class FreqMeasurement extends Measurement {
                     publishProgress(toTransform);
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
             return true;
         }
+
         @Override
         protected void onProgressUpdate(double[]...progress) {
             double mMaxFFTSample = 150.0;
@@ -111,7 +117,7 @@ public class FreqMeasurement extends Measurement {
                 }
             }
             mHighestFreq = (((1.0 * frequency) / (1.0 * blockSize)) * mPeakPos)/2;
-            measurementResult.setDecibel(mHighestFreq);
+            measurementResult.setValue(mHighestFreq);
         }
         @Override
         protected void onPostExecute(Boolean result) {

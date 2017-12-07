@@ -46,7 +46,7 @@ public class MicMeasurement extends Measurement {
 
     //update result to interface
     private void updateStatus() {
-        measurementResult.setDecibel(20 * Math.log10(mediaRecorder.getMaxAmplitude()));
+        measurementResult.setValue(20 * Math.log10(mediaRecorder.getMaxAmplitude()));
     }
 
     //stop record

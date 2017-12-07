@@ -9,20 +9,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.thanh.ssound.screen.FileScreen">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:id="@+id/btnMeasure"
-        android:layout_marginTop="61dp"
-        android:layout_centerHorizontal="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Hz"
         android:id="@+id/txtFreq"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/txtNote"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="80dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="C"
+        android:id="@+id/txtNote"
+        android:textSize="330px"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>

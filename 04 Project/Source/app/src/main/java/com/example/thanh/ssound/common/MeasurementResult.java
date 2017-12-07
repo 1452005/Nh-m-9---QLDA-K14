@@ -6,5 +6,5 @@ package com.example.thanh.ssound.common;
 
 //use for get result
 public interface MeasurementResult {
-    public void setDecibel(double decibel);
+    public void setValue(double value);
 }

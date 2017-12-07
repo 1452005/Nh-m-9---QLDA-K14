@@ -114,7 +114,7 @@ public class MainScreenFragment extends Fragment implements MeasurementResult {
 
     //get decibel
     @Override
-    public void setDecibel(double decibel) {
+    public void setValue(double decibel) {
         wheel.setDecibel((float)decibel);
         this.decibel=(float)decibel;
     }

@@ -39,9 +39,9 @@ public class OutputMeasurement extends Measurement {
         visualizer.getMeasurementPeakRms(measurementPeakRms);
         int decibel=(int)(20*Math.log10(Math.abs(5000+ measurementPeakRms.mRms)));
         if(decibel<73) {
-            measurementResult.setDecibel(decibel);
+            measurementResult.setValue(decibel);
         }else {
-            measurementResult.setDecibel(0);
+            measurementResult.setValue(0);
         }
 
     }

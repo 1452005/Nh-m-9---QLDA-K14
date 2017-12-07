@@ -192,7 +192,7 @@ public class BackgroundService extends Service implements MeasurementResult {
        }
 
     @Override
-    public void setDecibel(double decibel) {
+    public void setValue(double decibel) {
         this.decibel=(int)decibel;
     }
 
